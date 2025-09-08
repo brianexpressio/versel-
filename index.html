@@ -22,12 +22,8 @@
   <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
 
-  <!-- (Opcional) Plausible: troque o domínio abaixo e descomente -->
-  <!-- <script defer data-domain="expressio-headline.vercel.app" src="https://plausible.io/js/script.js"></script> -->
-
   <style>
     :root{
-      /* Paleta default (substituída por JS se LOGO_URL for carregado) */
       --bg:#0b1016; --bg-soft:#0e141b; --card:#111823; --text:#e6edf3; --muted:#9fb1c7;
       --brand:#14b8a6; --brand-2:#2563eb; --accent:#f6c945; --ring:0 0 0 1px rgba(20,184,166,.18), 0 12px 34px rgba(37,99,235,.12);
       --ok:#4ade80; --warn:#f59e0b; --bad:#ef4444;
@@ -87,25 +83,32 @@
     @media (max-width:980px){ .kpis{grid-template-columns:repeat(2,1fr)} .grid-2{grid-template-columns:1fr} }
 
     /* Watermark confidencial (sem bloqueio de acesso) */
-    .wm:before{
-      content:"CONFIDENCIAL – EXPRESSIO"; position:fixed; inset:0; pointer-events:none; z-index:0;
-      background:
-        repeating-linear-gradient(45deg, rgba(255,255,255,.03) 0 40px, transparent 40px 80px),
-        repeating-linear-gradient(-45deg, rgba(255,255,255,.03) 0 40px, transparent 40px 80px);
-      mix-blend-mode:overlay
-    }
+    .wm:before{ content:"CONFIDENCIAL – EXPRESSIO"; position:fixed; inset:0; pointer-events:none; z-index:0;
+      background: repeating-linear-gradient(45deg, rgba(255,255,255,.03) 0 40px, transparent 40px 80px),
+                  repeating-linear-gradient(-45deg, rgba(255,255,255,.03) 0 40px, transparent 40px 80px);
+      mix-blend-mode:overlay }
+
+    /* Roadmap cards */
+    .features{display:grid; grid-template-columns:repeat(2,1fr); gap:16px}
+    .feat{background:var(--card); border:1px solid color-mix(in srgb, var(--text) 10%, transparent); border-radius:16px; padding:16px; box-shadow:var(--ring)}
+    .feat h4{margin:0 0 6px}
+    .feat .meta{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.1em}
+    .feat ul{margin:6px 0 0 16px}
+    .timeline{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:8px}
+    .tstep{background:var(--bg-soft); border:1px dashed color-mix(in srgb, var(--text) 10%, transparent); border-radius:12px; padding:10px; font-size:12px}
   </style>
 </head>
 <body data-theme="dark">
 <header>
   <div class="container nav">
     <div class="brand">
-      <img id="logo" alt="Expressio" src="" onerror="this.style.display='none'"/>
+      <img id="logo" alt="Expressio" src="https://expressio.com.br/wp-content/uploads/logo-expressio.svg" onerror="this.style.display='none'"/>
       <div>Expressio <span class="muted" style="font-weight:600">Data Room</span></div>
     </div>
     <nav>
       <a href="#kpis">KPIs</a><a href="#network">Rede</a><a href="#ops">Operação</a><a href="#unit">Unit Economics</a>
-      <a href="#cohorts">Cohorts</a><a href="#docs">Documentos</a>
+      <a href="#roadmap">Roadmap</a><a href="#market">Mercado</a><a href="#diff">Diferenciais</a><a href="#expand">Expansão</a>
+      <a href="#docs">Documentos</a>
     </nav>
     <div style="display:flex; gap:8px"><button class="mode" id="modeBtn">🌙 / ☀️</button></div>
   </div>
@@ -115,7 +118,7 @@
   <section class="hero">
     <span class="tag">Logística + Fintech para PMEs de E-commerce</span>
     <h1>Operação inteligente, custo previsível e capital para escalar</h1>
-    <p class="muted">SLO que unifica envios, integra transportadoras e adiciona fintech nativa para PMEs. </p>
+    <p class="muted">SLO que unifica envios, integra transportadoras e adiciona fintech nativa para PMEs.</p>
   </section>
 
   <!-- KPIs Top + Sparklines -->
@@ -150,13 +153,9 @@
 
   <!-- Rede / Globo -->
   <section id="network" class="grid-2">
-    <div class="card">
-      <h3 class="h">Rede LatAm (rotas animadas)</h3>
-      <div id="globe" class="chart tall"></div>
-    </div>
+    <div class="card"><h3 class="h">Rede LatAm (rotas animadas)</h3><div id="globe" class="chart tall"></div></div>
     <div class="grid">
-      <div class="card">
-        <h3 class="h">Simulador What‑if</h3>
+      <div class="card"><h3 class="h">Simulador What‑if</h3>
         <div class="controls">
           <div class="control"><label><span>Envios/mês</span><b><span id="s_ship_v">0</span></b></label><input id="s_ship" type="range" min="1000" max="200000" step="1000" value="15000"/></div>
           <div class="control"><label><span>Take rate (%)</span><b><span id="s_rate_v">0</span>%</b></label><input id="s_rate" type="range" min="2" max="15" step="0.1" value="6.0"/></div>
@@ -168,11 +167,9 @@
           <span class="pill">LTV/CAC: <b id="sim_ratio">0.0x</b></span>
         </div>
       </div>
-      <div class="card">
-        <h3 class="h">Notas</h3>
+      <div class="card"><h3 class="h">Notas</h3>
         <ul class="muted" style="margin-top:2px; line-height:1.6">
-          <li>Dados base reais: <b>R$ 200 mil em 6 meses</b>, <b>10 clientes ativos</b>.</li>
-          <li>Atualize o objeto <code>DATA</code> para refletir últimas métricas.</li>
+          <li>Dados base: <b>R$ 200 mil em 6 meses</b>, <b>10 clientes ativos</b>.</li>
         </ul>
       </div>
     </div>
@@ -180,14 +177,8 @@
 
   <!-- Operação -->
   <section id="ops" class="grid-2">
-    <div class="card">
-      <h3 class="h">Sankey — do Pedido à Entrega</h3>
-      <div id="sankey" class="chart"></div>
-    </div>
-    <div class="card" id="unit">
-      <h3 class="h">Waterfall — Unit Economics por envio</h3>
-      <div id="waterfall" class="chart"></div>
-    </div>
+    <div class="card"><h3 class="h">Sankey — do Pedido à Entrega</h3><div id="sankey" class="chart"></div></div>
+    <div class="card" id="unit"><h3 class="h">Waterfall — Unit Economics por envio</h3><div id="waterfall" class="chart"></div></div>
   </section>
 
   <!-- Séries MoM -->
@@ -196,15 +187,128 @@
     <div class="card"><h3 class="h">Envios MoM (coluna)</h3><canvas id="barShipments" class="chart"></canvas></div>
   </section>
 
-  <!-- Cohorts -->
-  <section id="cohorts" class="grid-2">
-    <div class="card"><h3 class="h">Cohorts de Receita (MRR)</h3><canvas id="cohortChart" class="chart"></canvas></div>
-    <div class="card"><h3 class="h">Time & Contatos</h3>
-      <div style="display:grid; gap:8px" class="muted">
-        <div><b style="color:var(--text)">Fundadores:</b> Nome 1 • Nome 2 — advisors sob NDA</div>
-        <div><b style="color:var(--text)">Contato:</b> invest@expressio.com.br</div>
-        <div><b style="color:var(--text)">Calendly:</b> <a href="#">Agendar 30 min</a></div>
+  <!-- Roadmap & Produtos -->
+  <section id="roadmap">
+    <h3 class="h">Roadmap de Produto (2025–2026)</h3>
+    <div class="features">
+      <div class="feat">
+        <div class="meta">1. Página de Checking & Checkout</div>
+        <h4>Emissão rápida de etiquetas</h4>
+        <p class="muted">Meta: experiência simples e rápida para emissão de etiquetas.</p>
+        <ul>
+          <li>Cotação <b>multi-CEP</b></li>
+          <li>Integrações: <b>Bling</b>, <b>Tray</b></li>
+          <li>Fluxo completo até <b>pagamento</b> e <b>CT‑e</b></li>
+        </ul>
+        <div class="timeline">
+          <div class="tstep">Q4/25: MVP multi-CEP</div>
+          <div class="tstep">Q1/26: Bling/Tray 1ª onda</div>
+          <div class="tstep">Q2/26: CT‑e & billing</div>
+          <div class="tstep">Q3/26: automações</div>
+        </div>
+        <p class="muted" style="margin-top:6px">Impacto: ↑ conversão, ↓ erros de envio.</p>
       </div>
+      <div class="feat">
+        <div class="meta">2. Expressio Pay</div>
+        <h4>Monetização & flexibilidade financeira</h4>
+        <p class="muted">Meta: wallet, crédito e conciliação nativa.</p>
+        <ul>
+          <li>Carteira digital + <b>split</b> (transportadora/Expressio/cliente)</li>
+          <li><b>Parcelamento</b> e conciliação automática</li>
+        </ul>
+        <div class="timeline">
+          <div class="tstep">Q4/25: wallet + split</div>
+          <div class="tstep">Q1/26: parcelamento</div>
+          <div class="tstep">Q2/26: conciliação</div>
+          <div class="tstep">Q3/26: risco/score</div>
+        </div>
+        <p class="muted" style="margin-top:6px">Impacto: novas receitas + fidelização.</p>
+      </div>
+      <div class="feat">
+        <div class="meta">3. Leilão Automatizado de Fretes (SaaS)</div>
+        <h4>Otimização de custo e prazo</h4>
+        <p class="muted">Meta: motor de leilão entre transportadoras.</p>
+        <ul>
+          <li>Regras por cliente (peso, região, SLA)</li>
+          <li>Relatórios de eficiência</li>
+        </ul>
+        <div class="timeline">
+          <div class="tstep">Q1/26: motor beta</div>
+          <div class="tstep">Q2/26: regras custom</div>
+          <div class="tstep">Q3/26: relatórios</div>
+          <div class="tstep">Q4/26: API pública</div>
+        </div>
+        <p class="muted" style="margin-top:6px">Impacto: ↓ custo logístico, ↑ competitividade.</p>
+      </div>
+      <div class="feat">
+        <div class="meta">4. Atendimento com Agente Azure AI</div>
+        <h4>Suporte inteligente e proativo</h4>
+        <p class="muted">Meta: agente virtual (pedidos, rastreios, CT‑e, faturas) via WhatsApp, e‑mail e portal.</p>
+        <ul>
+          <li>Baseada em Azure AI + IA própria</li>
+          <li>Deflexão de chamados + NPS</li>
+        </ul>
+        <div class="timeline">
+          <div class="tstep">Q4/25: intents principais</div>
+          <div class="tstep">Q1/26: WhatsApp & e‑mail</div>
+          <div class="tstep">Q2/26: portal & automações</div>
+          <div class="tstep">Q3/26: proactive care</div>
+        </div>
+        <p class="muted" style="margin-top:6px">Impacto: ↓ TME, ↑ NPS e retenção.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mercado TAM / SAM / SOM -->
+  <section id="market" class="grid-2">
+    <div class="card"><h3 class="h">Mercado — Brasil</h3><canvas id="marketBR" class="chart"></canvas></div>
+    <div class="card"><h3 class="h">Mercado — LatAm (TAM adicional)</h3><canvas id="marketLatam" class="chart"></canvas></div>
+  </section>
+
+  <!-- Diferenciais -->
+  <section id="diff" class="grid">
+    <div class="card"><h3 class="h">Diferenciais Expressio</h3>
+      <ul style="line-height:1.8" class="muted">
+        <li><b>SaaS Logístico (TMS/SLO) modular</b>: não apenas marketplace de frete; plataforma completa (cotação, etiquetas, CT‑e, TMS).</li>
+        <li><b>Fintech integrada – Expressio Pay</b>: intermediação + crédito/parcelamento.</li>
+        <li><b>API flexível</b>: integra multi‑plataforma (e‑commerce, ERPs, OMS) via API.</li>
+        <li><b>Atendimento inteligente (Azure + IA)</b>: suporte proativo e deflexão de chamados.</li>
+      </ul>
+    </div>
+    <div class="card"><h3 class="h">Comparativo — panorama</h3>
+      <div style="overflow:auto">
+        <table style="width:100%; border-collapse:collapse">
+          <thead>
+            <tr style="text-align:left">
+              <th style="padding:8px; border-bottom:1px solid rgba(255,255,255,.1)">Critério</th>
+              <th style="padding:8px; border-bottom:1px solid rgba(255,255,255,.1)">Expressio</th>
+              <th style="padding:8px; border-bottom:1px solid rgba(255,255,255,.1)">Melhor Envio</th>
+              <th style="padding:8px; border-bottom:1px solid rgba(255,255,255,.1)">Estoca</th>
+            </tr>
+          </thead>
+          <tbody class="muted">
+            <tr><td style="padding:8px">Plataforma</td><td style="padding:8px"><b>SLO/TMS modular</b></td><td style="padding:8px">Marketplace de frete</td><td style="padding:8px">Fulfillment + logística</td></tr>
+            <tr><td style="padding:8px">Fintech de frete</td><td style="padding:8px"><b>Wallet, split, parcelamento</b></td><td style="padding:8px">—</td><td style="padding:8px">—</td></tr>
+            <tr><td style="padding:8px">Automação CT‑e</td><td style="padding:8px"><b>Sim (roadmap)</b></td><td style="padding:8px">Parcial</td><td style="padding:8px">Sim (operacional)</td></tr>
+            <tr><td style="padding:8px">IA/Atendimento</td><td style="padding:8px"><b>Azure + IA própria</b></td><td style="padding:8px">—</td><td style="padding:8px">—</td></tr>
+            <tr><td style="padding:8px">API</td><td style="padding:8px"><b>Abertas/multi‑plataforma</b></td><td style="padding:8px">Limitada</td><td style="padding:8px">Focada no stack Estoca</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted" style="margin:6px 0 0">*Posicionamento de alto nível para fins de estratégia.</p>
+    </div>
+  </section>
+
+  <!-- Expansão -->
+  <section id="expand" class="grid-2">
+    <div class="card"><h3 class="h">Estratégia de Expansão</h3>
+      <ul class="muted" style="line-height:1.8">
+        <li><b>Brasil</b>: penetração em PMEs digitais (Bling, Tray, Nuvemshop, Loja Integrada) e parceria com <b>Asaas</b>; depois médias operações e fulfillment.</li>
+        <li><b>LatAm (2026+)</b>: replicar modelo em <b>México</b> e <b>Colômbia</b>; parcerias locais com transportadoras.</li>
+      </ul>
+    </div>
+    <div class="card"><h3 class="h">Mapa de Rotas e Oportunidades</h3>
+      <div id="globe2" class="chart"></div>
     </div>
   </section>
 
@@ -225,22 +329,7 @@
 
 <script>
 /* =============================
-   CONFIGURAÇÃO RÁPIDA
-============================= */
-const CONFIG = {
-  LOGO_URLS: [
-    'https://expressio.com.br/wp-content/uploads/logo-expressio.svg',
-    'https://expressio.com.br/wp-content/uploads/logo.png',
-    'https://expressio.com.br/favicon.ico'
-  ],
-  BRAND_COLORS: {
-    // Ajuste manual (se quiser forçar):
-    primary: '#14b8a6', secondary: '#2563eb', bg: '#0b1016', text:'#e6edf3'
-  }
-};
-
-/* =============================
-   DADOS (reais base)
+   DADOS (atualize conforme necessário)
 ============================= */
 const DATA = {
   revenueMonthly: [18000, 26000, 34000, 41000, 42000, 39000], // soma ≈ 200k
@@ -267,34 +356,11 @@ const DATA = {
     {from:'saoPaulo',to:'lima',volume:90}, {from:'saoPaulo',to:'bogota',volume:70},
     {from:'mexicoCity',to:'bogota',volume:110}, {from:'mexicoCity',to:'lima',volume:60}
   ],
-  simDefault:{ shipments:15000, takeRatePct:6.0, arpu:2500 }
+  simDefault:{ shipments:15000, takeRatePct:6.0, arpu:2500 },
+  market:{
+    tamBR: 150, sam: 35, som: 1.5, tamLatamExtra: 80 // valores em R$ bi
+  }
 };
-
-/* ======== Tema automático a partir do logo (com fallback) ======== */
-(function loadLogoAndTheme(){
-  const imgEl = document.getElementById('logo');
-  (async()=>{
-    for(const url of CONFIG.LOGO_URLS){
-      try{ await tryLoad(url); imgEl.src=url; break; }catch(e){}
-    }
-    // Aplica cores manuais (edite aqui se desejar)
-    setTheme(CONFIG.BRAND_COLORS);
-  })();
-
-  function tryLoad(url){
-    return new Promise((res,rej)=>{ const i=new Image(); i.crossOrigin='anonymous'; i.onload=()=>res(url); i.onerror=rej; i.src=url; });
-  }
-
-  function setTheme(p){
-    const r = document.documentElement;
-    if(p.bg) r.style.setProperty('--bg', p.bg);
-    if(p.primary) r.style.setProperty('--brand', p.primary);
-    if(p.secondary) r.style.setProperty('--brand-2', p.secondary);
-    if(p.text) r.style.setProperty('--text', p.text);
-    // Derivados
-    r.style.setProperty('--bg-soft', getComputedStyle(r).getPropertyValue('--bg'));
-  }
-})();
 
 /* ========= Dark/Light ========= */
   document.getElementById('modeBtn').onclick = ()=>{
@@ -344,6 +410,16 @@ const DATA = {
     const scatter = Object.values(DATA.hubs).map(([lat,lng])=>({value:[lng,lat,10]}));
     chart.setOption({backgroundColor:'transparent', geo:{map:'world', roam:true, zoom:1.2, center:[-60,-15], itemStyle:{areaColor:'var(--bg-soft)', borderColor:'#1f2a37'}, emphasis:{itemStyle:{areaColor:'#1f2937'}}}, series:[ {type:'lines', coordinateSystem:'geo', effect:{show:true, symbol:'arrow', symbolSize:6, color:getCSS('--brand')}, lineStyle:{color:getCSS('--brand-2'), width:1, opacity:.6, curveness:.2}, data:lines}, {type:'effectScatter', coordinateSystem:'geo', symbolSize:8, itemStyle:{color:'var(--accent')}, data:scatter} ]});
   }
+  new ResizeObserver(()=>chart.resize()).observe(el);
+})();
+
+/* Duplicate small globe for expansion */
+(function initGlobe2(){
+  const el = document.getElementById('globe2'); if(!el) return; const chart = echarts.init(el);
+  const convert = ([lat,lng])=>[lng,lat];
+  const lines = DATA.routes.map(r=>({coords:[convert(DATA.hubs[r.from]), convert(DATA.hubs[r.to])], value:r.volume}));
+  const scatter = Object.values(DATA.hubs).map(([lat,lng])=>({value:[lng,lat,10]}));
+  chart.setOption({backgroundColor:'transparent', geo:{map:'world', roam:false, zoom:1.1, center:[-70,-10], itemStyle:{areaColor:'var(--bg-soft)', borderColor:'#1f2a37'}, emphasis:{itemStyle:{areaColor:'#1f2937'}}}, series:[ {type:'lines', coordinateSystem:'geo', effect:{show:true, symbol:'arrow', symbolSize:6, color:getCSS('--brand')}, lineStyle:{color:getCSS('--brand-2'), width:1, opacity:.6, curveness:.2}, data:lines}, {type:'effectScatter', coordinateSystem:'geo', symbolSize:8, itemStyle:{color:'var(--accent')}, data:scatter} ]});
   new ResizeObserver(()=>chart.resize()).observe(el);
 })();
 
@@ -399,16 +475,17 @@ const DATA = {
   new Chart(ctx,{type:'matrix', data:{datasets:[{label:'MRR (R$ mil)', data:data.map(d=>({x:d.x,y:d.y,v:d.v})), width:({chart})=>(chart.chartArea||{}).width/labels.length-4, height:({chart})=>(chart.chartArea||{}).height/rows.length-4, backgroundColor:c=>palette(c.raw.v), borderColor:'rgba(255,255,255,.1)', borderWidth:1}]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>`${rows[c.raw.y].cohort} • ${labels[c.raw.x]}: R$ ${c.raw.v}k`}}}, scales:{x:{type:'linear',position:'top',ticks:{callback:v=>labels[v]||''}, grid:{display:false}, offset:true}, y:{type:'linear',ticks:{callback:v=>rows[v]?.cohort||''}, grid:{display:false}, reverse:true, offset:true}}});
 })();
 
-/* =========== Simulador =========== */
-(function sim(){
-  const s_ship=gid('s_ship'), s_rate=gid('s_rate'), s_arpu=gid('s_arpu'), sv_ship=gid('s_ship_v'), sv_rate=gid('s_rate_v'), sv_arpu=gid('s_arpu_v'), out_rev=gid('sim_rev'), out_fin=gid('sim_fin'), out_ratio=gid('sim_ratio');
-  function setDefaults(){ s_ship.value=DATA.simDefault.shipments; s_rate.value=DATA.simDefault.takeRatePct; s_arpu.value=DATA.simDefault.arpu; }
-  function recompute(){ const ship=+s_ship.value, rate=+s_rate.value/100, arpu=+s_arpu.value; sv_ship.textContent=ship.toLocaleString('pt-BR'); sv_rate.textContent=(+s_rate.value).toFixed(1); sv_arpu.textContent=arpu.toLocaleString('pt-BR'); const price=DATA.unitEconomics.pricePerShipment, gmv=ship*price, revenue=gmv*rate, fintech=ship*DATA.unitEconomics.fintechMarginPerShipment, ratio=(arpu*12)/DATA.cac; out_rev.textContent=fmtBRL(revenue); out_fin.textContent=fmtBRL(fintech); out_ratio.textContent=ratio.toFixed(1)+'x'; }
-  setDefaults(); [s_ship,s_rate,s_arpu].forEach(i=>i.addEventListener('input',recompute)); recompute();
+/* ============ Mercado charts =========== */
+(function marketCharts(){
+  const ctx1 = document.getElementById('marketBR');
+  const ctx2 = document.getElementById('marketLatam');
+  // Brasil TAM/SAM/SOM
+  new Chart(ctx1,{type:'bar', data:{labels:['TAM (BR)','SAM','SOM'], datasets:[{label:'R$ bi', data:[DATA.market.tamBR, DATA.market.sam, DATA.market.som], backgroundColor:['rgba(37,99,235,.35)','rgba(20,184,166,.35)','rgba(246,201,69,.45)'], borderColor:['#2563eb','#14b8a6','#f6c945'], borderWidth:1}]}, options:{plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>`R$ ${c.raw.toLocaleString('pt-BR')} bi`}}}, scales:{y:{ticks:{color:'var(--muted)', callback:v=>`R$ ${v} bi`}, grid:{color:'rgba(255,255,255,.08)'}}, x:{ticks:{color:'var(--muted)'}}}});
+  // LatAm TAM adicional
+  new Chart(ctx2,{type:'doughnut', data:{labels:['México+Colômbia+Chile'], datasets:[{data:[DATA.market.tamLatamExtra], backgroundColor:['rgba(20,184,166,.35)'], borderColor:['#14b8a6'], borderWidth:1}]}, options:{plugins:{legend:{display:true}}, cutout:'60%'}});
 })();
 
 /* ============== Utils ============== */
-function gid(id){return document.getElementById(id)}
 const fmtBRL = n => n.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
 const fmtK = n => n>=1000? (Math.round(n/100)/10)+'k': n.toString();
 const clamp = (x,a,b)=>Math.max(a,Math.min(b,x));
