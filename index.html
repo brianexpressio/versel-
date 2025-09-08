@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Expressio — Data Room</title>
+  <meta name="description" content="Data Room — Expressio: Logística + Fintech para PMEs de E-commerce"/>
+  <meta name="robots" content="noindex, nofollow"/>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%235cf4d3' d='M12 34l12 12 28-28-8-8z'/%3E%3C/svg%3E">
+  <meta property="og:title" content="Expressio — Data Room"/>
+  <meta property="og:description" content="Logística + Fintech para PMEs de E-commerce"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:image" content="https://dummyimage.com/1200x630/0b1016/e6edf3&text=Expressio+Data+Room"/>
+  <meta name="theme-color" content="#0b1016">
+
+  <!-- Fonts & libs -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/map/js/world.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+  <!-- Plausible Analytics (troque o domínio) -->
+  <script defer data-domain="expressio-headline.vercel.app" src="https://plausible.io/js/script.js"></script>
+
+  <style>
+    :root{
+      --bg:#0b1016; --bg-soft:#0e141b; --card:#111823; --text:#e6edf3; --muted:#9fb1c7;
+      --brand:#5cf4d3; --brand-2:#6cb2f9; --accent:#f6c945; --ring:0 0 0 1px rgba(92,244,211,.2), 0 10px 30px rgba(92,244,211,.12);
+      --ok:#4ade80; --warn:#f59e0b; --bad:#ef4444;
+    }
+    [data-theme="light"]{
+      --bg:#f8fafc; --bg-soft:#f1f5f9; --card:#fff; --text:#0b1016; --muted:#475569;
+      --brand:#1db5a4; --brand-2:#2563eb; --accent:#b45309; --ring:0 2px 14px rgba(37,99,235,.15);
+    }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--text);
+      background: radial-gradient(900px 520px at 15% -10%, rgba(92,244,211,.06), transparent 60%),
+                  radial-gradient(900px 520px at 115% 0%, rgba(108,178,249,.06), transparent 60%), var(--bg)}
+    a{color:var(--brand-2); text-decoration:none}
+    .container{max-width:1200px; margin:0 auto; padding:0 20px}
+    header{position:sticky; top:0; z-index:50; backdrop-filter:saturate(1.1) blur(10px);
+      background:color-mix(in srgb, var(--bg) 92%, transparent);
+      border-bottom:1px solid color-mix(in srgb, var(--text) 12%, transparent)}
+    .nav{display:flex; align-items:center; justify-content:space-between; padding:14px 0}
+    .brand{display:flex; align-items:center; gap:10px; font-weight:800}
+    .brand .logo{width:28px; height:28px; background:
+      conic-gradient(from 210deg at 50% 50%, var(--brand), var(--brand-2) 55%, var(--brand) 100%); border-radius:8px; transform:skewX(-8deg)}
+    .nav a{margin:0 10px; color:var(--muted); font-weight:500} .nav a:hover{color:var(--text)}
+    .mode{padding:8px 12px; background:var(--card); border:1px solid color-mix(in srgb, var(--text) 11%, transparent);
+      border-radius:10px; color:var(--muted); cursor:pointer}
+    .hero{padding:64px 0 24px} .hero h1{font-size:40px; margin:8px 0}
+    .hero p{color:var(--muted); margin:0} .tag{display:inline-flex; align-items:center; gap:8px; background:var(--card);
+      border:1px solid color-mix(in srgb, var(--text) 10%, transparent); color:var(--muted);
+      padding:8px 12px; border-radius:999px; box-shadow:var(--ring)}
+    .kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin:24px 0 12px}
+    .card{background:var(--card); border:1px solid color-mix(in srgb, var(--text) 10%, transparent);
+      border-radius:16px; padding:16px; box-shadow:var(--ring)}
+    .kpi-title{color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.12em}
+    .kpi-value{font-size:28px; font-weight:800; margin-top:6px}
+    .kpi-sub{color:var(--muted); font-size:12px}
+    section{padding:26px 0}
+    .grid-2{display:grid; grid-template-columns:1.1fr .9fr; gap:16px}
+    .grid{display:grid; gap:16px}
+    .chart{height:380px; border-radius:14px; background:var(--bg-soft); border:1px dashed color-mix(in srgb, var(--text) 10%, transparent)}
+    .chart.tall{height:460px} .h{margin:0 0 10px; font-size:18px; letter-spacing:.02em}
+    .controls{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:12px}
+    .control{background:var(--bg-soft); border:1px solid color-mix(in srgb, var(--text) 10%, transparent); padding:12px; border-radius:12px}
+    .control label{display:flex; justify-content:space-between; font-size:12px; color:var(--muted)}
+    .control input[type="range"]{width:100%}
+    .pill{display:inline-flex; gap:6px; padding:6px 10px; border-radius:999px; background:rgba(92,244,211,.14); color:var(--brand)}
+    .docs a{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-radius:12px;
+      background:var(--bg-soft); border:1px solid color-mix(in srgb, var(--text) 10%, transparent); color:var(--text)}
+    .docs a span{color:var(--muted); font-size:12px} footer{padding:30px 0 60px; color:var(--muted); text-align:center}
+    .spark{height:120px}
+    @media (max-width:980px){ .kpis{grid-template-columns:repeat(2,1fr)} .grid-2{grid-template-columns:1fr} }
+
+    /* Watermark confidencial */
+    .wm:before{
+      content:"CONFIDENCIAL – EXPRESSIO"; position:fixed; inset:0; pointer-events:none; z-index:0;
+      background:
+        repeating-linear-gradient(45deg, rgba(255,255,255,.03) 0 40px, transparent 40px 80px),
+        repeating-linear-gradient(-45deg, rgba(255,255,255,.03) 0 40px, transparent 40px 80px);
+      mix-blend-mode:overlay
+    }
+
+    /* Gate (senha + NDA) */
+    .gate{position:fixed; inset:0; background:rgba(7,10,14,.72); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:100}
+    .gate .box{width:min(480px,92vw); background:var(--card); border:1px solid color-mix(in srgb, var(--text) 10%, transparent);
+      border-radius:16px; box-shadow:var(--ring); padding:22px}
+    .gate h2{margin:0 0 8px} .gate p{color:var(--muted); margin:0 0 12px}
+    .gate input{width:100%; padding:12px 14px; border-radius:10px; border:1px solid color-mix(in srgb, var(--text) 12%, transparent);
+      background:var(--bg-soft); color:var(--text); outline:none}
+    .gate .row{display:flex; align-items:center; gap:10px; margin:12px 0}
+    .btn{padding:10px 14px; border-radius:10px; border:1px solid color-mix(in srgb, var(--text) 12%, transparent);
+      background:linear-gradient(120deg, var(--brand), var(--brand-2)); color:#051016; font-weight:800; cursor:pointer}
+    .ghost{background:var(--bg-soft); color:var(--text)}
+    .error{color:var(--bad); font-size:12px; min-height:16px}
+  </style>
+</head>
+<body data-theme="dark">
+<header>
+  <div class="container nav">
+    <div class="brand"><div class="logo"></div><div>Expressio <span style="color:var(--muted); font-weight:600">Data Room</span></div></div>
+    <nav>
+      <a href="#kpis">KPIs</a><a href="#network">Rede</a><a href="#ops">Operação</a><a href="#unit">Unit Economics</a>
+      <a href="#cohorts">Cohorts</a><a href="#docs">Documentos</a>
+    </nav>
+    <div style="display:flex; gap:8px">
+      <button class="mode" id="shareBtn">🔗 Share</button>
+      <button class="mode" id="modeBtn">🌙 / ☀️</button>
+    </div>
+  </div>
+</header>
+
+<div class="container wm" id="content" style="visibility:hidden">
+  <section class="hero">
+    <span class="tag">Logística + Fintech para PMEs de E-commerce</span>
+    <h1>Transparência para decidir rápido</h1>
+    <p>Mercado endereçável US$ 7B (Brasil + LatAm). Tração validada e plano de escala com automação + produtos financeiros nativos.</p>
+  </section>
+
+  <section id="kpis">
+    <div class="kpis">
+      <div class="card">
+        <div class="kpi-title">Receita (últimos 6m)</div>
+        <div class="kpi-value" id="kpiRevenue">R$ 0</div>
+        <div class="kpi-sub" id="kpiRevSub">MoM</div>
+        <canvas id="sparkRev" class="spark"></canvas>
+      </div>
+      <div class="card">
+        <div class="kpi-title">Clientes Ativos</div>
+        <div class="kpi-value" id="kpiClients">0</div>
+        <div class="kpi-sub">Sob NDA</div>
+        <canvas id="sparkClients" class="spark"></canvas>
+      </div>
+      <div class="card">
+        <div class="kpi-title">Envios / mês</div>
+        <div class="kpi-value" id="kpiShip">0</div>
+        <div class="kpi-sub" id="kpiShipSub">Crescimento</div>
+        <canvas id="sparkShip" class="spark"></canvas>
+      </div>
+      <div class="card">
+        <div class="kpi-title">LTV / CAC</div>
+        <div class="kpi-value" id="kpiRatio">0.0x</div>
+        <div class="kpi-sub">Meta ≥ 3.0x</div>
+        <div id="gauge" class="chart" style="height:160px; margin-top:8px; display:flex; align-items:center; justify-content:center"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="network" class="grid-2">
+    <div class="card">
+      <h3 class="h">Rede LatAm (rotas animadas)</h3>
+      <div id="globe" class="chart tall"></div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3 class="h">Simulador What‑if</h3>
+        <div class="controls">
+          <div class="control">
+            <label><span>Envios/mês</span><b><span id="s_ship_v">0</span></b></label>
+            <input id="s_ship" type="range" min="1000" max="200000" step="1000" value="15000"/>
+          </div>
+          <div class="control">
+            <label><span>Take rate (%)</span><b><span id="s_rate_v">0</span>%</b></label>
+            <input id="s_rate" type="range" min="2" max="15" step="0.1" value="6.0"/>
+          </div>
+          <div class="control">
+            <label><span>ARPU (R$)</span><b><span id="s_arpu_v">0</span></b></label>
+            <input id="s_arpu" type="range" min="200" max="8000" step="50" value="2500"/>
+          </div>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:12px">
+          <span class="pill">Receita estimada: <b id="sim_rev">R$ 0</b></span>
+          <span class="pill">Margem fintech: <b id="sim_fin">R$ 0</b></span>
+          <span class="pill">LTV/CAC: <b id="sim_ratio">0.0x</b></span>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="h">Notas</h3>
+        <ul style="color:var(--muted); margin-top:2px; line-height:1.6">
+          <li>Dados de exemplo — substitua em <code>DATA</code>.</li>
+          <li>Sankey mostra performance operacional (on‑time, atraso, exceção).</li>
+          <li>Simulador altera gauge e projeções em tempo real.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="ops" class="grid-2">
+    <div class="card">
+      <h3 class="h">Sankey — do Pedido à Entrega</h3>
+      <div id="sankey" class="chart"></div>
+    </div>
+    <div class="card" id="unit">
+      <h3 class="h">Waterfall — Unit Economics por envio</h3>
+      <div id="waterfall" class="chart"></div>
+    </div>
+  </section>
+
+  <section class="grid-2">
+    <div class="card">
+      <h3 class="h">Receita MoM (área)</h3>
+      <canvas id="areaRevenue" class="chart"></canvas>
+    </div>
+    <div class="card">
+      <h3 class="h">Envios MoM (coluna)</h3>
+      <canvas id="barShipments" class="chart"></canvas>
+    </div>
+  </section>
+
+  <section id="cohorts" class="grid-2">
+    <div class="card">
+      <h3 class="h">Cohorts de Receita (MRR)</h3>
+      <canvas id="cohortChart" class="chart"></canvas>
+    </div>
+    <div class="card">
+      <h3 class="h">Time & Contatos</h3>
+      <div style="display:grid; gap:8px; color:var(--muted)">
+        <div><b style="color:var(--text)">Fundadores:</b> Nome 1 • Nome 2 — advisors sob NDA</div>
+        <div><b style="color:var(--text)">Contato:</b> invest@expressio.com • +55 (11) 99999‑9999</div>
+        <div><b style="color:var(--text)">Calendly:</b> <a href="#">Agendar 30 min</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="docs" class="grid">
+    <div class="card">
+      <h3 class="h">Documentos</h3>
+      <div class="docs grid">
+        <a href="#" target="_blank" rel="noopener">Pitch Deck <span>PDF</span></a>
+        <a href="#" target="_blank" rel="noopener">Projeções Financeiras <span>XLSX/Sheets</span></a>
+        <a href="#" target="_blank" rel="noopener">Contratos/Parcerias <span>ZIP</span></a>
+        <a href="#" target="_blank" rel="noopener">Term Sheet/SAFE (se aplicável) <span>PDF</span></a>
+      </div>
+    </div>
+  </section>
+
+  <footer>© Expressio — confidencial. Acesso sob convite.</footer>
+</div>
+
+<div class="gate" id="gate">
+  <div class="box">
+    <h2>Acesso restrito</h2>
+    <p>Este data room é confidencial. Digite o <b>código de acesso</b> e aceite o NDA para entrar.</p>
+    <input id="pwd" type="password" placeholder="Código de acesso" autocomplete="current-password"/>
+    <div class="row"><input id="nda" type="checkbox"/> <label for="nda">Li e aceito os termos de confidencialidade (NDA).</label></div>
+    <div class="row">
+      <button class="btn" id="btnEnter">Entrar</button>
+      <button class="btn ghost" id="btnHelp">Como obter acesso?</button>
+    </div>
+    <div class="error" id="err"></div>
+  </div>
+</div>
+
+<script>
+const CONFIG = { PASS_PLAIN: "", PASS_HASH: "056dc894eda0f1a3eecce4c8947d44394b152296572572b61a7ca5f336d38256", SESSION_KEY: "expressio_dataroom_v1", SHARE_SECRET: "headline-2025-rotas", TRACK_URL: "", DOMAIN: "expressio-headline.vercel.app" };
+const DATA = { revenueMonthly: [18000, 26000, 34000, 41000, 42000, 39000], shipmentsMonthly: [4200, 6800, 9000, 12000, 14500, 16000], clientsActive: 10, ltv: 12000, cac: 2800, flows: { carriers:["Carrier A","Carrier B","Carrier C"], mix:[0.5,0.3,0.2], outOnTime:0.89, outDelay:0.08, outException:0.03 }, cohorts: { labels:["M1","M2","M3","M4","M5","M6","M7","M8","M9","M10","M11","M12"], rows:[ { cohort:"2025‑01", values:[22,21,20,19,19,18,17,16,16,15,14,13] }, { cohort:"2025‑02", values:[18,17,17,16,16,15,15,14,13,13,12,11] }, { cohort:"2025‑03", values:[26,25,24,23,22,22,21,20,20,19,18,17] }, { cohort:"2025‑04", values:[30,29,28,27,26,25,24,24,23,22,21,20] } ] }, unitEconomics:{ pricePerShipment:18, carrierCost:12.2, fintechMarginPerShipment:0.85, otherOps:1.1 }, hubs:{ saoPaulo:[-23.55,-46.63], buenosAires:[-34.60,-58.38], santiago:[-33.45,-70.66], lima:[-12.05,-77.04], bogota:[4.71,-74.07], mexicoCity:[19.43,-99.13] }, routes:[ {from:'saoPaulo',to:'santiago',volume:120}, {from:'saoPaulo',to:'buenosAires',volume:180}, {from:'saoPaulo',to:'lima',volume:90}, {from:'saoPaulo',to:'bogota',volume:70}, {from:'mexicoCity',to:'bogota',volume:110}, {from:'mexicoCity',to:'lima',volume:60} ], simDefault:{ shipments:15000, takeRatePct:6.0, arpu:2500 } };
+const $ = s=>document.querySelector(s); const fmtBRL = n => n.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}); const fmtK = n => n>=1000? (Math.round(n/100)/10)+'k': n.toString(); const clamp = (x,a,b)=>Math.max(a,Math.min(b,x)); function hmac(input, key){ let h=0; const s=(input+key); for(let i=0;i<s.length;i++) h = Math.imul(31,h) + s.charCodeAt(i) | 0; return (h>>>0).toString(16); }
+(async function gateInit(){ const params = new URLSearchParams(location.search); const token = params.get('key'); const viewer = params.get('v')||''; const gate = $('#gate'), content = $('#content'), err = $('#err'); try { const sess = JSON.parse(localStorage.getItem(CONFIG.SESSION_KEY)||'null'); if(sess && sess.ok && sess.exp > Date.now()){ unlock(); return; } } catch(e){} if(token){ try{ const json = JSON.parse(atob(token)); if(json.exp && json.exp > Date.now() && json.sig === hmac(String(json.exp), CONFIG.SHARE_SECRET)){ $('#pwd').placeholder = "Acesso via link"; $('#pwd').disabled = true; } }catch(e){} } $('#btnHelp').onclick = ()=>{ err.textContent = "Solicite acesso ao time Expressio (invest@expressio.com)."; }; $('#btnEnter').onclick = async ()=>{ err.textContent = ""; if(!$('#nda').checked){ err.textContent="Você deve aceitar o NDA."; return; } const pass = $('#pwd').value; let ok = false; if(CONFIG.PASS_HASH){ const enc = new TextEncoder().encode(pass); const buf = await crypto.subtle.digest('SHA-256', enc); const hex = Array.from(new Uint8Array(buf)).map(x=>x.toString(16).padStart(2,'0')).join(''); ok = (hex === CONFIG.PASS_HASH.toLowerCase()) || $('#pwd').disabled; } else { ok = (pass === CONFIG.PASS_PLAIN) || $('#pwd').disabled; } if(!ok){ err.textContent="Código inválido."; track('auth_failed',{viewer}); return; } const exp = Date.now() + 6*60*60*1000; localStorage.setItem(CONFIG.SESSION_KEY, JSON.stringify({ok:true, exp, viewer})); track('auth_ok',{viewer}); unlock(); }; function unlock(){ gate.style.display='none'; content.style.visibility='visible'; track('view',{viewer}); } })();
+$('#modeBtn').onclick = ()=>{ document.body.dataset.theme = document.body.dataset.theme==='dark'?'light':'dark'; }; $('#shareBtn').onclick = ()=>{ const label = prompt('Label do link (ex.: Headline) para tracking:', 'Headline') || 'Investidor'; const exp = Date.now() + 48*60*60*1000; const payload = {exp, sig:hmac(String(exp), CONFIG.SHARE_SECRET)}; const base = location.origin + location.pathname; const url = `${base}?v=${encodeURIComponent(label)}&key=${btoa(JSON.stringify(payload))}`; navigator.clipboard.writeText(url); alert(`Link com expiração (48h) copiado:
+${url}`); };
+(function initKPIs(){ const rev6 = DATA.revenueMonthly.reduce((a,b)=>a+b,0); const mom = (DATA.revenueMonthly.at(-1)/DATA.revenueMonthly.at(-2)-1)*100; const shipMoM = (DATA.shipmentsMonthly.at(-1)/DATA.shipmentsMonthly.at(-2)-1)*100; animCounter("kpiRevenue", rev6, v=>fmtBRL(v)); $("#kpiRevSub").textContent = `MoM: ${mom>=0?'+':''}${mom.toFixed(1)}%`; animCounter("kpiClients", DATA.clientsActive, v=>v.toFixed(0)); animCounter("kpiShip", DATA.shipmentsMonthly.at(-1), v=>fmtK(v)); $("#kpiShipSub").textContent = `MoM: ${shipMoM>=0?'+':''}${shipMoM.toFixed(1)}%`; const ratio = DATA.ltv/DATA.cac; animCounter("kpiRatio", ratio, v=>v.toFixed(1)+'x'); function animCounter(id, target, fmt){ anime({targets:{val:0}, val:target, round:1, easing:'easeOutQuad', duration:1200, update:anim=>{ $("#"+id).textContent = fmt(anim.animations[0].currentValue) }}); } const ctxR = $('#sparkRev'), ctxC = $('#sparkClients'), ctxS = $('#sparkShip'); new Chart(ctxR, {type:'line', data:{labels:DATA.revenueMonthly.map((_,i)=>`M${i+1}`), datasets:[{data:DATA.revenueMonthly, fill:true, tension:.35, borderColor:'#6cb2f9', backgroundColor:'rgba(108,178,249,.18)', pointRadius:0}]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{display:false}, y:{display:false}}}); new Chart(ctxC, {type:'line', data:{labels:DATA.revenueMonthly.map((_,i)=>`M${i+1}`), datasets:[{data:[6,7,8,9,10,10], tension:.35, borderColor:'#5cf4d3', backgroundColor:'rgba(92,244,211,.18)', pointRadius:0, fill:true}]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{display:false}, y:{display:false}}}); new Chart(ctxS, {type:'bar', data:{labels:DATA.shipmentsMonthly.map((_,i)=>`M${i+1}`), datasets:[{data:DATA.shipmentsMonthly, backgroundColor:'rgba(246,201,69,.40)', borderColor:'#f6c945', borderWidth:1}]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{display:false}, y:{display:false}}}); })();
+(function initGlobe(){ const el = document.getElementById('globe'); const chart = echarts.init(el); try{ const routes3D = DATA.routes.map(r=>({ coords:[[DATA.hubs[r.from][1],DATA.hubs[r.from][0]],[DATA.hubs[r.to][1],DATA.hubs[r.to][0]]], value:r.volume })); const points = Object.values(DATA.hubs).map(([lat,lng])=>({name:'', value:[lng,lat,10]})); chart.setOption({ backgroundColor:'transparent', globe:{ baseTexture:'https://cdn.jsdelivr.net/npm/echarts-gl@2/examples/data-gl/asset/world.topo.bathy.200401.jpg', heightTexture:'https://cdn.jsdelivr.net/npm/echarts-gl@2/examples/data-gl/asset/bathymetry_bw_composite_4k.jpg', shading:'realistic', realisticMaterial:{roughness:.9}, light:{ambient:{intensity:.6}, main:{intensity:.5}}, viewControl:{autoRotate:true, autoRotateAfterStill:5, targetCoord:[-50,-15], distance:150}}, series:[ {type:'lines3D', coordinateSystem:'globe', effect:{show:true, trailWidth:2, trailLength:.2, trailColor:'#5cf4d3', trailOpacity:.9}, blendMode:'lighter', lineStyle:{width:1, color:'#6cb2f9', opacity:.3}, data:routes3D}, {type:'scatter3D', coordinateSystem:'globe', symbolSize:6, itemStyle:{color:'#f6c945'}, data:points} ] }); } catch(e){ const convert = ([lat,lng])=>[lng,lat]; const lines = DATA.routes.map(r=>({coords:[convert(DATA.hubs[r.from]), convert(DATA.hubs[r.to])], value:r.volume})); const scatter = Object.values(DATA.hubs).map(([lat,lng])=>({value:[lng,lat,10]})); chart.setOption({backgroundColor:'transparent', geo:{map:'world', roam:true, zoom:1.2, center:[-60,-15], itemStyle:{areaColor:'#0e141b', borderColor:'#1f2a37'}, emphasis:{itemStyle:{areaColor:'#1f2937'}}}, series:[ {type:'lines', coordinateSystem:'geo', effect:{show:true, symbol:'arrow', symbolSize:6, color:'#5cf4d3'}, lineStyle:{color:'#6cb2f9', width:1, opacity:.6, curveness:.2}, data:lines}, {type:'effectScatter', coordinateSystem:'geo', symbolSize:8, itemStyle:{color:'#f6c945'}, data:scatter} ]}); } new ResizeObserver(()=>chart.resize()).observe(el); })();
+(function initGauge(){ const container = document.getElementById('gauge'); const w=360,h=160,r=140,cx=w/2,cy=h*1.1; const ratio = clamp(DATA.ltv/DATA.cac,0,6); const NS='http://www.w3.org/2000/svg', svg=document.createElementNS(NS,'svg'); svg.setAttribute('viewBox',`0 0 ${w} ${h}`); svg.style.width='100%'; const arc=(start,end,color,width)=>{const p=document.createElementNS(NS,'path'); p.setAttribute('stroke',color); p.setAttribute('stroke-width',width); p.setAttribute('fill','none'); p.setAttribute('d',desc(cx,cy,r,start,end)); return p;} const t=document.createElementNS(NS,'path'); t.setAttribute('d',desc(cx,cy,r,180,360)); t.setAttribute('stroke','rgba(255,255,255,.12)'); t.setAttribute('stroke-width','14'); t.setAttribute('fill','none'); svg.appendChild(t); const v=arc(180,180,'url(#grad)',16); svg.appendChild(v); const defs=document.createElementNS(NS,'defs'); const lg=document.createElementNS(NS,'linearGradient'); lg.id='grad'; lg.setAttribute('x1','0%'); lg.setAttribute('x2','100%'); [["0%",'#ef4444'],["50%",'#f59e0b'],["100%",'#4ade80']].forEach(([o,c])=>{const s=document.createElementNS(NS,'stop'); s.setAttribute('offset',o); s.setAttribute('stop-color',c); lg.appendChild(s)}); defs.appendChild(lg); svg.appendChild(defs); const needle=document.createElementNS(NS,'line'); needle.setAttribute('x1',cx); needle.setAttribute('y1',cy); needle.setAttribute('x2',cx); needle.setAttribute('y2',cy-r+20); needle.setAttribute('stroke','#fff'); needle.setAttribute('stroke-width','3'); needle.setAttribute('stroke-linecap','round'); svg.appendChild(needle); const text=document.createElementNS(NS,'text'); text.setAttribute('x',cx); text.setAttribute('y',cy-28); text.setAttribute('text-anchor','middle'); text.setAttribute('font-size','22'); text.setAttribute('font-weight','800'); text.textContent = (DATA.ltv/DATA.cac).toFixed(1)+'x'; svg.appendChild(text); container.appendChild(svg); anime({targets:{t:180}, t:180+(ratio/6)*180, easing:'spring(1, 90, 10, 0)', duration:1300, update:a=>{const e=a.animations[0].currentValue; v.setAttribute('d',desc(cx,cy,r,180,e)); const rad=(e-90)*Math.PI/180; needle.setAttribute('x2',cx + (r-10)*Math.cos(rad)); needle.setAttribute('y2',cy + (r-10)*Math.sin(rad)); }}); function desc(cx,cy,r,start,end){const s=pt(cx,cy,r,end), e=pt(cx,cy,r,start), large=end-start<=180?0:1; return `M ${s.x} ${s.y} A ${r} ${r} 0 ${large} 0 ${e.x} ${e.y}`;} function pt(cx,cy,r,a){const rad=(a-90)*Math.PI/180; return {x:cx+r*Math.cos(rad), y:cy+r*Math.sin(rad)};} })();
+(function initSankey(){ const el = document.getElementById('sankey'); const chart = echarts.init(el); const carriers = DATA.flows.carriers, mix = DATA.flows.mix; const outcomes = [{name:'On-time', key:'outOnTime', color:'#4ade80'},{name:'Delay', key:'outDelay', color:'#f59e0b'},{name:'Exception', key:'outException', color:'#ef4444'}]; function option(){ const nodes=[{name:'Pedidos'}, ...carriers.map(c=>({name:c})), ...outcomes.map(o=>({name:o.name}))]; const total=1000, links=[]; carriers.forEach((c,i)=>{const v=Math.round(total*mix[i]); links.push({source:'Pedidos',target:c,value:v}); outcomes.forEach(o=>links.push({source:c,target:o.name,value:Math.round(v*DATA.flows[o.key])}));}); const colorMap=Object.fromEntries(outcomes.map(o=>[o.name,o.color])); return {backgroundColor:'transparent', tooltip:{trigger:'item',formatter:p=>`${p.data.source? p.data.source+' → ' : ''}${p.data.name||p.data.target}: <b>${p.data.value}</b>`}, series:[{type:'sankey', nodeGap:12, nodeWidth:16, lineStyle:{color:'gradient', curveness:.5}, itemStyle:{color:p=>colorMap[p.data.name]||'#6cb2f9'}, data:nodes, links}]}; } chart.setOption(option()); new ResizeObserver(()=>chart.resize()).observe(el); setInterval(()=>{['outOnTime','outDelay','outException'].forEach(k=>{DATA.flows[k]=clamp(DATA.flows[k]+(Math.random()-.5)*0.01,0.01,0.95)}); const s=DATA.flows.outOnTime+DATA.flows.outDelay+DATA.flows.outException; DATA.flows.outOnTime/=s; DATA.flows.outDelay/=s; DATA.flows.outException/=s; chart.setOption(option());}, 2600); })();
+(function initWaterfall(){ const el = document.getElementById('waterfall'); const chart=echarts.init(el); const u=DATA.unitEconomics, gross=u.pricePerShipment, shipCost=-u.carrierCost, fin=u.fintechMarginPerShipment, other=-u.otherOps, contrib=gross+shipCost+fin+other; const data=[{name:'Receita',value:gross,color:'#6cb2f9'},{name:'Custo frete',value:shipCost,color:'#ef4444'},{name:'Fintech',value:fin,color:'#4ade80'},{name:'Ops var.',value:other,color:'#f59e0b'},{name:'Margem contrib.',value:contrib,color:'#5cf4d3'}]; chart.setOption({backgroundColor:'transparent', tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:p=>p.map(i=>`${i.marker} ${i.name}: <b>${fmtBRL(i.data.value)}</b>`).join('<br/>')}, xAxis:{type:'category',data:data.map(d=>d.name),axisLabel:{color:'var(--muted)'}}, yAxis:{type:'value',axisLabel:{color:'var(--muted)'}}, series:[{type:'bar', data:data.map(d=>({value:d.value, itemStyle:{color:d.color}})), label:{show:true, position:'top', formatter:p=>fmtBRL(p.data.value)}}]}); new ResizeObserver(()=>chart.resize()).observe(el); })();
+(function seriesCharts(){ const ctxA=$('#areaRevenue'), ctxB=$('#barShipments'); new Chart(ctxA,{type:'line',data:{labels:DATA.revenueMonthly.map((_,i)=>`M${i+1}`),datasets:[{data:DATA.revenueMonthly, borderColor:'#6cb2f9', backgroundColor:'rgba(108,178,249,.20)', fill:true, tension:.35, pointRadius:0}]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{ticks:{color:'var(--muted)'}}, y:{ticks:{color:'var(--muted)'}}}}); new Chart(ctxB,{type:'bar',data:{labels:DATA.shipmentsMonthly.map((_,i)=>`M${i+1}`),datasets:[{data:DATA.shipmentsMonthly, backgroundColor:'rgba(92,244,211,.30)', borderColor:'#5cf4d3', borderWidth:1}]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{ticks:{color:'var(--muted)'}}, y:{ticks:{color:'var(--muted)'}}}}); })();
+(function initCohorts(){ const ctx=$('#cohortChart'); const labels=DATA.cohorts.labels, rows=DATA.cohorts.rows; const data=[]; rows.forEach((row,r)=>row.values.forEach((v,c)=>data.push({x:c,y:r,v}))); const palette=v=> v>=28?'#5cf4d3': v>=24?'#6cb2f9': v>=20?'#a78bfa': v>=16?'#f6c945':'#f87171'; new Chart(ctx,{type:'matrix', data:{datasets:[{label:'MRR (R$ mil)', data:data.map(d=>({x:d.x,y:d.y,v:d.v})), width:({chart})=>(chart.chartArea||{}).width/labels.length-4, height:({chart})=>(chart.chartArea||{}).height/rows.length-4, backgroundColor:c=>palette(c.raw.v), borderColor:'rgba(255,255,255,.1)', borderWidth:1}]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>`${rows[c.raw.y].cohort} • ${labels[c.raw.x]}: R$ ${c.raw.v}k`}}}, scales:{x:{type:'linear',position:'top',ticks:{callback:v=>labels[v]||''}, grid:{display:false}, offset:true}, y:{type:'linear',ticks:{callback:v=>rows[v]?.cohort||''}, grid:{display:false}, reverse:true, offset:true}}}); })();
+(function sim(){ const s_ship=$('#s_ship'), s_rate=$('#s_rate'), s_arpu=$('#s_arpu'), sv_ship=$('#s_ship_v'), sv_rate=$('#s_rate_v'), sv_arpu=$('#s_arpu_v'), out_rev=$('#sim_rev'), out_fin=$('#sim_fin'), out_ratio=$('#sim_ratio'); function setDefaults(){ s_ship.value=DATA.simDefault.shipments; s_rate.value=DATA.simDefault.takeRatePct; s_arpu.value=DATA.simDefault.arpu; } function recompute(){ const ship=+s_ship.value, rate=+s_rate.value/100, arpu=+s_arpu.value; sv_ship.textContent=ship.toLocaleString('pt-BR'); sv_rate.textContent=(+s_rate.value).toFixed(1); sv_arpu.textContent=arpu.toLocaleString('pt-BR'); const price=DATA.unitEconomics.pricePerShipment, gmv=ship*price, revenue=gmv*rate, fintech=ship*DATA.unitEconomics.fintechMarginPerShipment, ratio=(arpu*12)/DATA.cac; out_rev.textContent=fmtBRL(revenue); out_fin.textContent=fmtBRL(fintech); out_ratio.textContent=ratio.toFixed(1)+'x'; updateGaugeNeedle(ratio); } function updateGaugeNeedle(ratio){ ratio=clamp(ratio,0,6); const svg=document.querySelector('#gauge svg'); if(!svg) return; const [w,h]=svg.getAttribute('viewBox').split(' ').slice(2).map(Number); const cx=w/2,cy=h*1.1,r=140-10; const val=svg.querySelector('path:nth-of-type(2)'), needle=svg.querySelector('line'); const end=180+(ratio/6)*180; const tmp={t:parseFloat(needle.dataset.t||180)}; anime({targets:tmp,t:end,duration:800,easing:'spring(1, 90, 10, 0)',update:a=>{const e=a.animations[0].currentValue; val.setAttribute('d',desc(cx,cy,r+10,180,e)); const rad=(e-90)*Math.PI/180; needle.setAttribute('x2',cx+r*Math.cos(rad)); needle.setAttribute('y2',cy+r*Math.sin(rad));}, complete:()=>{needle.dataset.t=end;}}); function desc(cx,cy,r,start,end){function pt(a){const rad=(a-90)*Math.PI/180; return {x:cx+r*Math.cos(rad), y:cy+r*Math.sin(rad)}} const s=pt(end), e=pt(start), large=end-start<=180?0:1; return `M ${s.x} ${s.y} A ${r} ${r} 0 ${large} 0 ${e.x} ${e.y}`;} } setDefaults(); [s_ship,s_rate,s_arpu].forEach(i=>i.addEventListener('input',recompute)); recompute(); })();
+function track(event, payload={}){ try{ if(window.plausible){ window.plausible(event, {props:payload}); } if(CONFIG.TRACK_URL){ const data = JSON.stringify({event, ts:Date.now(), href:location.href, ua:navigator.userAgent, ...payload}); if(navigator.sendBeacon){ navigator.sendBeacon(CONFIG.TRACK_URL, new Blob([data],{type:'application/json'})); } else { fetch(CONFIG.TRACK_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body:data, mode:'no-cors'}); } } }catch(e){} }
+</script>
+</body>
+</html>
